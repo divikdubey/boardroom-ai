@@ -12,7 +12,12 @@ const app = express();
 // Behind Render's proxy, trust it so req.ip is the real user IP (needed after deploy)
 if (process.env.NODE_ENV === "production") app.set("trust proxy", 1);
 
-app.use(cors());
+// In production only our frontend may call this API.
+// CLIENT_URL can hold several URLs separated by commas
+const allowedOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(",").map((u) => u.trim())
+  : true; // not set: allow all (local development)
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 app.use(passport.initialize());
 

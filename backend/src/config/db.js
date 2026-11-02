@@ -1,8 +1,10 @@
 import dns from "node:dns";
 import mongoose from "mongoose";
 
-dns.setServers(["1.1.1.1", "8.8.8.8"]);
-dns.setDefaultResultOrder("ipv4first");
+// Workaround for my laptop's network only. Not needed on the hosting server
+if (process.env.NODE_ENV !== "production") {
+  dns.setDefaultResultOrder("ipv4first");
+}
 
 export async function connectDB() {
   try {
